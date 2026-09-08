@@ -1,0 +1,252 @@
+import java.io.*;
+import java.util.*;
+
+enum Color {
+    RED, GREEN
+}
+
+abstract class Tree {
+    private int value;
+    private Color color;
+    private int depth;
+
+    Tree(int value, Color color, int depth) {
+        this.value = value;
+        this.color = color;
+        this.depth = depth;
+    }
+
+    int getValue() {
+        return value;
+    }
+
+    Color getColor() {
+        return color;
+    }
+
+    int getDepth() {
+        return depth;
+    }
+
+    abstract void accept(TreeVis visitor);
+}
+
+class TreeNode extends Tree {
+    private ArrayList<Tree> children = new ArrayList<Tree>();
+
+    TreeNode(int value, Color color, int depth) {
+        super(value, color, depth);
+    }
+
+    void accept(TreeVis visitor) {
+        visitor.visitNode(this);
+
+        for (Tree child : children) {
+            child.accept(visitor);
+        }
+    }
+
+    void addChild(Tree child) {
+        children.add(child);
+    }
+}
+
+class TreeLeaf extends Tree {
+    TreeLeaf(int value, Color color, int depth) {
+        super(value, color, depth);
+    }
+
+    void accept(TreeVis visitor) {
+        visitor.visitLeaf(this);
+    }
+}
+
+abstract class TreeVis {
+    public abstract int getResult();
+
+    public abstract void visitNode(TreeNode node);
+
+    public abstract void visitLeaf(TreeLeaf leaf);
+}
+
+class SumInLeavesVisitor extends TreeVis {
+
+    private int sum = 0;
+
+    public int getResult() {
+        return sum;
+    }
+
+    public void visitNode(TreeNode node) {
+    }
+
+    public void visitLeaf(TreeLeaf leaf) {
+        sum += leaf.getValue();
+    }
+}
+
+class ProductOfRedNodesVisitor extends TreeVis {
+
+    private long product = 1;
+    private static final long MOD = 1000000007;
+
+    public int getResult() {
+        return (int) product;
+    }
+
+    public void visitNode(TreeNode node) {
+        if (node.getColor() == Color.RED) {
+            product = (product * node.getValue()) % MOD;
+        }
+    }
+
+    public void visitLeaf(TreeLeaf leaf) {
+        if (leaf.getColor() == Color.RED) {
+            product = (product * leaf.getValue()) % MOD;
+        }
+    }
+}
+
+class FancyVisitor extends TreeVis {
+
+    private int evenDepthSum = 0;
+    private int greenLeafSum = 0;
+
+    public int getResult() {
+        return Math.abs(evenDepthSum - greenLeafSum);
+    }
+
+    public void visitNode(TreeNode node) {
+        if (node.getDepth() % 2 == 0) {
+            evenDepthSum += node.getValue();
+        }
+    }
+
+    public void visitLeaf(TreeLeaf leaf) {
+        if (leaf.getColor() == Color.GREEN) {
+            greenLeafSum += leaf.getValue();
+        }
+    }
+}
+
+public class Solution {
+
+    public static Tree solveTree(
+            int[] values,
+            Color[] colors,
+            int[][] edges) {
+
+        int n = values.length;
+
+        ArrayList<Integer>[] graph = new ArrayList[n];
+
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<Integer>();
+        }
+
+        for (int[] edge : edges) {
+            int u = edge[0] - 1;
+            int v = edge[1] - 1;
+
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        return buildTree(0, -1, 0, values, colors, graph);
+    }
+
+    private static Tree buildTree(
+            int current,
+            int parent,
+            int depth,
+            int[] values,
+            Color[] colors,
+            ArrayList<Integer>[] graph) {
+
+        ArrayList<Integer> children = new ArrayList<Integer>();
+
+        for (int next : graph[current]) {
+            if (next != parent) {
+                children.add(next);
+            }
+        }
+
+        if (children.isEmpty()) {
+            return new TreeLeaf(
+                    values[current],
+                    colors[current],
+                    depth
+            );
+        }
+
+        TreeNode node = new TreeNode(
+                values[current],
+                colors[current],
+                depth
+        );
+
+        for (int child : children) {
+            node.addChild(
+                    buildTree(
+                            child,
+                            current,
+                            depth + 1,
+                            values,
+                            colors,
+                            graph
+                    )
+            );
+        }
+
+        return node;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+
+        int[] values = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            values[i] = sc.nextInt();
+        }
+
+        Color[] colors = new Color[n];
+
+        for (int i = 0; i < n; i++) {
+            int color = sc.nextInt();
+
+            if (color == 0) {
+                colors[i] = Color.RED;
+            } else {
+                colors[i] = Color.GREEN;
+            }
+        }
+
+        int[][] edges = new int[n - 1][2];
+
+        for (int i = 0; i < n - 1; i++) {
+            edges[i][0] = sc.nextInt();
+            edges[i][1] = sc.nextInt();
+        }
+
+        Tree root = solveTree(values, colors, edges);
+
+        SumInLeavesVisitor visitor1 = new SumInLeavesVisitor();
+        ProductOfRedNodesVisitor visitor2 =
+                new ProductOfRedNodesVisitor();
+        FancyVisitor visitor3 = new FancyVisitor();
+
+        root.accept(visitor1);
+        root.accept(visitor2);
+        root.accept(visitor3);
+
+        System.out.println(visitor1.getResult());
+        System.out.println(visitor2.getResult());
+        System.out.println(visitor3.getResult());
+
+        sc.close();
+    }
+}
