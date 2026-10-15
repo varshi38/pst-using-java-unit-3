@@ -1,0 +1,19 @@
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        HashMap<String, String> contacts = new HashMap<>();
+        contacts.put("Arun", "9876543210");
+        contacts.put("Ravi", "9876501234");
+
+        contacts.put("Arun", "9123456780"); // Update
+        System.out.println(contacts.get("Arun")); // Search
+    }
+}
+
+
+Output:
+
+
+9123456780

@@ -1,0 +1,20 @@
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        HashMap<Integer, String> map = new HashMap<>();
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        list.add(101);
+        map.put(101, "Laptop");
+        pq.add(3);
+        pq.add(1);
+        pq.add(2);
+
+        System.out.println(map.get(101));
+        while (!pq.isEmpty())
+            System.out.println(pq.poll());
+    }
+}

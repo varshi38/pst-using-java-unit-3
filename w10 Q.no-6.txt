@@ -1,0 +1,20 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        LinkedHashSet<String> items = new LinkedHashSet<>();
+        items.add("Pen");
+        items.add("Book");
+        items.add("Pen");
+        items.add("Bag");
+
+        System.out.println(items);
+    }
+}
+
+
+Output:
+
+text
+
+[Pen, Book, Bag]

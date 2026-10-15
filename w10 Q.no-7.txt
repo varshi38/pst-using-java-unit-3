@@ -1,0 +1,21 @@
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        TreeSet<Integer> marks = new TreeSet<>();
+        marks.add(80);
+        marks.add(60);
+        marks.add(90);
+        marks.add(80);
+        System.out.println(marks);
+    }
+}
+
+
+Output:
+
+text
+
+[60, 80, 90]
+

@@ -1,0 +1,23 @@
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        LinkedList<String> playlist = new LinkedList<>();
+
+        playlist.add("Song1");
+        playlist.add("Song2");
+        playlist.add("Song3");
+
+        playlist.remove("Song2");
+
+        System.out.println(playlist);
+    }
+}
+
+
+Output:
+
+text
+
+[Song1, Song3]

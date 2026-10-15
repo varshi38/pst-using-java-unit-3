@@ -1,0 +1,20 @@
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        HashSet<String> s1 = new HashSet<>(
+            Arrays.asList("Java", "Python", "C"));
+        HashSet<String> s2 = new HashSet<>(
+            Arrays.asList("Java", "C", "HTML"));
+
+        s1.retainAll(s2);
+        System.out.println(s1);
+    }
+}
+
+
+Output:
+
+
+[Java, C]
