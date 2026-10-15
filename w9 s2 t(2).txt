@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Vehicle {
+    int rate;
+    Vehicle(int r) { rate = r; }
+    int fare(int d) { return rate * d; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+
+        for (int i = 0; i < n; i++) {
+            String type = sc.next();
+            int d = sc.nextInt(), rate = 0;
+
+            switch (type) {
+                case "Bike": rate = 5; break;
+                case "Cab": rate = 12; break;
+                case "Auto": rate = 12; break;
+                default:
+                    System.out.println("Invalid booking");
+                    continue;
+            }
+
+            if (d <= 0)
+                System.out.println("Invalid booking");
+            else
+                System.out.println(new Vehicle(rate).fare(d));
+        }
+        sc.close();
+    }
+}
